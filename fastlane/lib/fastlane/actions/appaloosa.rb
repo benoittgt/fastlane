@@ -6,8 +6,9 @@ module Fastlane
         api_key = params[:api_token]
         store_id = params[:store_id]
         binary = params[:binary]
-        p params
+        puts 'before remove_extra_screenshots_file'
         remove_extra_screenshots_file(params[:screenshots])
+        puts 'before binary_url'
         binary_url = get_binary_link(binary, api_key, store_id, params[:group_ids])
         return if binary_url.nil?
         screenshots_url = get_screenshots_links(api_key, store_id, params[:screenshots], params[:locale], params[:device])
@@ -29,10 +30,14 @@ module Fastlane
         http.use_ssl = true
         presign_form_response = http.request(Net::HTTP::Get.new(uri.request_uri))
         json_res = JSON.parse(presign_form_response.body)
+        puts
+        p json_res
+        puts
         return if error_detected(json_res['errors'])
         s3_sign = json_res['s3_sign']
         path = json_res['path']
         uri = URI.parse(Base64.decode64(s3_sign))
+        puts "before file open"
         File.open(file, 'rb') do |f|
           http = Net::HTTP.new(uri.host)
           put = Net::HTTP::Put.new(uri.request_uri)
@@ -40,6 +45,7 @@ module Fastlane
           put['content-type'] = ''
           http.request(put)
         end
+        puts "after path"
         path
       end
 
