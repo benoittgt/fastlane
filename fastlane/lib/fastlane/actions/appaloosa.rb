@@ -39,6 +39,7 @@ module Fastlane
         uri = URI.parse(Base64.decode64(s3_sign))
         puts "before file open"
         File.open(file, 'rb') do |f|
+          p f.read
           http = Net::HTTP.new(uri.host)
           put = Net::HTTP::Put.new(uri.request_uri)
           put.body = f.read
