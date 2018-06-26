@@ -1,11 +1,12 @@
 module Fastlane
   module Actions
     class AppaloosaAction < Action
-      APPALOOSA_SERVER = 'https://www.appaloosa-store.com/api/v2'.freeze
+      APPALOOSA_SERVER = 'https://demo.appaloosa-store.com/api/v2'.freeze
       def self.run(params)
         api_key = params[:api_token]
         store_id = params[:store_id]
         binary = params[:binary]
+        p params
         remove_extra_screenshots_file(params[:screenshots])
         binary_url = get_binary_link(binary, api_key, store_id, params[:group_ids])
         return if binary_url.nil?
